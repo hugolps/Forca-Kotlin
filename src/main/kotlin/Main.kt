@@ -1,99 +1,16 @@
 fun main() {
 
-    // Criando a Classe
-    class Word(val secretWord: String, val hint: String) {
-
-        fun size(): String {
-            return "A palavra tem ${secretWord.length} letras"
-        }
-
-        fun distinctChar(): String {
-            var count = 0
-            val uniqueLetters = mutableListOf<String>()
-            for (letter in secretWord) {
-                if (!uniqueLetters.contains(letter.toString())) {
-                    uniqueLetters.add(letter.toString())
-                    count++
-                }
-            }
-            return "A palavra tem $count letras distintas"
-        }
-    }
-
-    // Variáveis globais
-    val hiddenWord = arrayListOf<String>()
-    val usedLetters = mutableListOf<String>()
-    var endGame = false
-    var chances = 6
-    var hits = 0
-
     // Instanciando o Objeto
-    val word1 = Word("abacate", "Fruta favorita da Vovó Juju")
-
-    // Escondendo a palavra
-    for (i in word1.secretWord) {
-        hiddenWord.add("*")
-    }
-
-    // Printar a palavra escondida com e sem acertos
-    fun printSecretWord(): String {
-        var finalWorld = ""
-        for ((i,letter) in hiddenWord.withIndex()) {
-            finalWorld += hiddenWord[i]
-        }
-        return finalWorld
-    }
-
-    //Alterar uma letra descoberta
-    fun changeLetter(TriedLetter: String, word: String) {
-        for ((i, letter) in word.withIndex()) {
-          if (TriedLetter == word[i].toString()) {
-              hiddenWord[i] = TriedLetter
-              hits++
-          }
-        }
-    }
-
-    //Pergutar a letra ao jogador e avaliar o acerto
-    fun askLetter(word: String) {
-        if (chances > 0 && hits < word.length) {
-            println("Informe uma letra: ")
-            val chosenLetter = readLine()!!
-
-            if (word.contains(chosenLetter)) {
-                changeLetter(chosenLetter, word)
-                return
-            }
-            else if (!usedLetters.contains(chosenLetter) && !word.contains(chosenLetter) && chances > 0) {
-                usedLetters.add(chosenLetter)
-                println("Letras já tentadas $usedLetters")
-                chances--
-                return
-            } else {
-                println("A letra $chosenLetter já foi utilizada. Tente outra letra")
-            }
-
-        } else if (chances == 0) {
-            println("Você PERDEU!")
-            println("FIM DO JOGO")
-            endGame = true
-            return
-        } else if (hits == word.length) {
-            println("Você VENCEU!")
-            println("FIM DO JOGO")
-            endGame = true
-            return
-        }
-    }
+    val word1 = Jogo("abacate", "Fruta favorita da Vovó Juju")
 
     //Começando o jogo
-    while (!endGame) {
+    while (!word1.endGame) {
         println("------- JOGO DA FORCA -------")
-        println("Você tem $chances tentativas")
+        println("Você tem ${word1.chances} tentativas")
         println("Dica: ${word1.hint}")
         println(word1.size())
         println(word1.distinctChar())
-        println("Palavra Secreta: ${printSecretWord()}")
-        askLetter(word1.secretWord)
+        println("Palavra Secreta: ${word1.printSecretWord()}")
+        word1.askLetter(word1.secretWord)
     }
 }
